@@ -1,0 +1,28 @@
+{
+  "name": "bootstrap-v5",
+  "version": "1.0.0",
+  "description": "learning bootsrap v5 with saas",
+  "main": "index.js",
+  "scripts": {
+    "compile:sass":"sass --watch scss:assets/css"
+  },
+  "keywords": [
+    "Bootstrap",
+    "bootstrap-v5",
+    "saas",
+    "learn-bootstrap",
+    "learn-saas"
+  ],
+  "author": "GoofySonu",
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.63.6"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "autoprefixer": "^10.4.14",
+    "bootstrap": "^5.3.0",
+    "postcss": "^8.4.26",
+    "postcss-cli": "^10.1.0"
+  }
+}
