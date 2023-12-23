@@ -1,0 +1,487 @@
+log and step function
+___________________________
+clc;
+close all;
+% Define parameters
+A = 4;    % Amplitude
+a = 1;    % Delay
+
+% Define time range
+t_step_cont = -2:0.1:8;
+
+% Calculate the continuous signal
+x_step_cont = A * (t_step_cont >= a);
+% Define the range of t values
+t_log_cont= linspace(1, 10, 1000);
+
+% Define the parameters
+A_a= 3;    % Amplitude
+b = 1.5;    % Base of the logarithm
+c = 0.2;  % Coefficient
+
+% Calculate the signal values
+x_log_cont = A_a* log(b *tan( c * t_log_cont )+ 1);
+
+%%% Perform Convolution
+conv_result = zeros(size(t_step_cont));
+
+for n = 1:length(t_step_cont)
+    for k = 1:length(t_log_cont)
+        if n - k + 1 >= 1 && n - k + 1 <= length(t_step_cont)
+            conv_result(n) = conv_result(n) + x_log_cont(k) * x_step_cont(n - k + 1);
+        end
+    end
+end
+l=conv(x_step_cont,x_log_cont);
+%%% Plot Exponential Decay Signal
+subplot(4, 2, 1);
+plot(t_step_cont, x_step_cont, 'b', 'LineWidth', 0.4);
+title('Continuous Step Signal: x(t) =A * (t >= a)');
+xlabel('t (sunu-045)');
+ylabel('x(t)');
+grid on;
+
+%%% Plot Trigonometric Signal
+subplot(4, 2, 3);
+plot(t_log_cont, x_log_cont, 'b', 'LineWidth', 0.1);
+title('Continuous Logarithmic function:A * log(b *tan( c * t )+ 1)');
+xlabel('x (sunu-045)');
+ylabel('f[x]');
+grid on;
+
+%%% Plot Convolution Result
+subplot(4, 2, 5);
+plot(t_step_cont, conv_result, 'r', 'LineWidth', 0.4);
+title('Convolution Result of Step and Logarithmic Signals');
+xlabel('t (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+subplot(4, 2, 7);
+plot( l, 'g', 'LineWidth', 1);
+title('Convolution Result of Step and Logarithmic Signals with using function');
+xlabel('Time (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+% Define discrete time range for the step signal
+n_step = -100:2:500;
+
+% Calculate the discrete step signal
+x_step_discrete = A * (n_step >= a);
+% Define discrete time range for the log signa
+n_log_discrete = 1:20;
+% Calculate the signal values for the discrete n values
+x_log_discrete = A_a * log(b * tan( c * n_log_discrete )+ 1);
+%%% Perform Convolution
+conv_result_discrete = zeros(size(n_step));
+
+for n = 1:length(n_step)
+    for k = 1:length(n_log_discrete)
+        if n - k + 1 >= 1 && n - k + 1 <= length(n_step)
+            conv_result_discrete(n) = conv_result_discrete(n) + x_log_discrete(k) * x_step_discrete(n - k + 1);
+        end
+    end
+end
+discrete_conv=conv(x_step_discrete,x_log_discrete);
+%%% Plot Exponential Decay Signal
+subplot(4, 2, 2);
+stem(n_step, x_step_discrete, 'b', 'LineWidth', 0.4);
+title('Discrete Step Signal: x(n) =A * (n_step >= a)');
+xlabel('n (sunu-045)');
+ylabel('x(n)');
+grid on;
+
+%%% Plot Trigonometric Signal
+subplot(4, 2, 4);
+stem(n_log_discrete, x_log_discrete, 'b', 'LineWidth', 0.1);
+title('Continuous Logarithmic function:A * log(b *tan( c * n_log_discrete )+ 1)');
+xlabel('x (sunu-045)');
+ylabel('f[x]');
+grid on;
+
+%%% Plot Convolution Result
+subplot(4, 2, 6);
+stem(n_step, conv_result_discrete, 'r', 'LineWidth', 0.4);
+title('Convolution Result of Step and Logarithmic Signals');
+xlabel('t (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+subplot(4, 2, 8);
+stem( discrete_conv, 'g', 'LineWidth', 1);
+title('Convolution Result of Step and Logarithmic Signals with using function');
+xlabel('Time (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+----------------------------------------------------------------
+exp_trig_conv
+_______________________________
+clc;
+close all;
+
+%%% Exponential decay signal
+% Define the range of t values
+t_exp = linspace(0, 5, 1000);
+
+% Define the decay constant alpha
+alpha_exp = 0.4;  % You can adjust this value
+
+% Calculate the function values
+x_exp = exp(-alpha_exp * t_exp );
+
+%%% Trigonometric signal
+t_trigon = 0:0.05:10;
+
+% Calculate the function values for the discrete x values
+x_trigon = 4 * tan(cos(4 * t_trigon + pi/2));
+
+%%% Perform Convolution
+conv_result = zeros(size(t_exp));
+
+for n = 1:length(t_exp)
+    for k = 1:length(t_trigon)
+        if n - k + 1 >= 1 && n - k + 1 <= length(t_exp)
+            conv_result(n) = conv_result(n) + x_trigon(k) * x_exp(n - k + 1);
+        end
+    end
+end
+l=conv(x_trigon,x_exp);
+%%% Plot Exponential Decay Signal
+subplot(4, 2, 1);
+plot(t_exp, x_exp, 'b', 'LineWidth', 2);
+title('Continuous Exponential Decay Signal: x(t) = e^{-\alpha t}');
+xlabel('t (sunu-045)');
+ylabel('x(t)');
+grid on;
+
+%%% Plot Trigonometric Signal
+subplot(4, 2, 3);
+plot(t_trigon, x_trigon, 'b', 'LineWidth', 1);
+title('Continuous Trigonometric Function:  4 * tan(cos(4 * t_trigon + pi/2))');
+xlabel('x (sunu-045)');
+ylabel('f[x]');
+grid on;
+
+%%% Plot Convolution Result
+subplot(4, 2, 5);
+plot(t_exp, conv_result, 'r', 'LineWidth', 2);
+title('Convolution Result of Exponential and Trigonometric Signals');
+xlabel('t (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+subplot(4, 2, 7);
+stem( l, 'g', 'LineWidth', 1);
+title('Convolution Result of Exponential and Trigonometric Signals with using function');
+xlabel('Time (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+
+
+%%% Exponential decay signal
+% Define the range of discrete n values
+n_exp = 0:0.001:5;
+
+% Define the decay constant alpha
+alpha_exp_discrete = 0.4;  % You can adjust this value
+
+% Calculate the function values for the discrete n values
+x_exp_discrete = exp(-alpha_exp_discrete * n_exp);
+
+%%% Trigonometric signal
+n_discrete_trig = 0:1:100;
+
+% Calculate the signal values for the discrete n values
+f_discrete_trig =  4 * tan(cos(4 * n_discrete_trig + pi/2));
+%%% Perform Discrete Convolution
+conv_result_discrete = zeros(size(n_exp));
+
+for n = 1:length(n_exp)
+    for k = 1:length(n_discrete_trig)
+        if n - k + 1 >= 1 && n - k + 1 <= length(n_exp)
+            conv_result_discrete(n) = conv_result_discrete(n) + f_discrete_trig(k) * x_exp_discrete(n - k + 1);
+        end
+    end
+end
+l_discrete=conv(f_discrete_trig,x_exp_discrete);
+%%% Plot Exponential Decay Signal
+subplot(4, 2, 2);
+stem(n_exp, x_exp_discrete, 'b', 'LineWidth', 0.1);
+title('Discrete Exponential Decay Signal: x(n) = e^{-\alpha n}');
+xlabel('n(sunu-045)');
+ylabel('x(n)');
+grid on;
+
+%%% Plot Trigonometric Signal
+subplot(4, 2, 4);
+stem(n_discrete_trig, f_discrete_trig, 'b', 'LineWidth', 0.01);
+title('Discrete Trigonometric Function: f[x] = 4 * tan(cos(4 * n_discrete_trig + pi/2))');
+xlabel('x (sunu-045)');
+ylabel('f[x]');
+grid on;
+
+%%% Plot Convolution Result
+subplot(4, 2, 6);
+stem(n_exp, conv_result_discrete, 'r', 'LineWidth', 0.1);
+title('Convolution Result of Exponential and Trigonometric Signals');
+xlabel('t (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+subplot(4, 2, 8);
+stem(l_discrete, 'g', 'LineWidth', 0.1);
+title('Convolution Result of Exponential and Trigonometric Signals with using function');
+xlabel('Time (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+
+-------------------------------------------------
+square_hyperbolic function
+_________________________________________________
+
+
+clc;
+close all;
+
+% Plot the continuous square wave signal
+t_square = linspace(0, 5, 1000);    % Time values from 0 to 5 seconds
+frequency = 2;               % Frequency of the square wave (1 Hz)
+amplitude = 3;               % Amplitude of the square wave
+
+square_signal = amplitude * square(2*pi*frequency*t_square);
+figure;
+plot(t_square, square_signal, 'r', 'LineWidth', 1);
+xlabel('Time (t) (sunu 045)');
+ylabel('x(t)');
+title('square Signal [amplitude * square(2*pi*frequency*t)]');
+ylim([-1 2]);
+grid on;
+
+%%% Hyperbolic signal
+t_hyperbolic = -5:.1:5;
+% Define the hyperbola parameters
+a = 1;  % Horizontal axis scaling factor
+b = 0.8;  % Vertical axis scaling factor
+
+% Parametric equations for the negative hyperbola
+x = a ./ t_hyperbolic;
+% y = b .* t_hyperbolic;
+
+figure;
+plot(t_hyperbolic, x, 'LineWidth', 1);
+xlabel('Time (t) (sunu-045)');
+ylabel('Signal Value');
+title('Signal: x = a ./ t_hyperbolic');
+grid on;
+
+%%% Perform Convolution
+conv_result = zeros(1, length(t_hyperbolic));
+
+for n = 1:length(t_hyperbolic)
+    for k = 1:length(t_square)
+        if n - k + 1 >= 1 && n - k + 1 <= length(t_hyperbolic)
+            conv_result(n) = conv_result(n) + x(n - k + 1) * square_signal(k);
+        end
+    end
+end
+
+%%% Plot Convolution Result
+figure;
+plot(t_hyperbolic, conv_result, 'LineWidth', 1);
+xlabel('Time (t) (sunu-045)');
+ylabel('Convolution Result');
+title('Convolution Result of Square and Hyperbolic Signals');
+grid on;
+%%% Perform Convolution
+l=conv(square_signal,x);
+figure;
+plot(l, 'LineWidth', 1);
+xlabel('Time (t) (sunu-045)');
+ylabel('Convolution Result');
+title('Convolution Result of Square and Hyperbolic Signals with using function');
+grid on;
+
+clc;
+close all;
+
+A = 1;      % Amplitude
+T = 5;     % Period
+cycles = 3; % Number of cycles
+n_square = 0:T*cycles; % Discrete time values
+
+% Calculate the square wave signal values
+square_signal = A * square(2 * pi / T * n_square, 50);
+figure;
+stem(n_square, square_signal, 'r', 'LineWidth', 1);
+xlabel('Time (t) (sunu 045)');
+ylabel('x(t)');
+title('square Signal [A * square(2 * pi / T * n, 50)]');
+grid on;
+
+%%% Hyperbolic signal
+n_hyperbolic = -5:.1:5;
+% Define the hyperbola parameters
+a = 1;  % Horizontal axis scaling factor
+b = 0.8;  % Vertical axis scaling factor
+
+% Parametric equations for the negative hyperbola
+x = a ./ t_hyperbolic;
+% y = b .* t_hyperbolic;
+
+figure;
+stem(n_hyperbolic, x, 'LineWidth', 1);
+xlabel('Time (t) (sunu-045)');
+ylabel('Signal Value');
+title('Signal: x = a ./ n_hyperbolic');
+grid on;
+
+
+%%% Perform Discrete Convolution
+conv_result_discrete = zeros(1, length(n_hyperbolic));
+
+for n = 1:length(n_hyperbolic)
+    for k = 1:length(n_square)
+        if n - k + 1 >= 1 && n - k + 1 <= length(n_hyperbolic)
+            conv_result_discrete(n) = conv_result_discrete(n) + x(n - k + 1) * square_signal(k);
+        end
+    end
+end
+
+%%% Plot Discrete Convolution Result
+figure;
+stem(n_hyperbolic, conv_result_discrete, 'LineWidth', 1);
+xlabel('Discrete Time (n) (sunu-045)');
+ylabel('Convolution Result');
+title('Discrete Convolution Result of Square and Hyperbolic Signals');
+grid on;
+%%% Perform Convolution
+l=conv(square_signal,x);
+figure;
+stem( l, 'LineWidth', 1);
+xlabel('Time (t) (sunu-045)');
+ylabel('Convolution Result');
+title('Convolution Result of Square and Hyperbolic Signals with using function');
+grid on;
+--------------------------------------------------------------------------------------------
+
+
+ramp and sawtooth function 
+___________________________________
+clc;
+close all;
+
+%%% Ramp signal
+t_ramp = 0:0.1:10;  % Time values from 0 to 10 in steps of 1
+slope = 2;                     % Slope of the linear ramp
+frequency = 0.5;               % Frequency of the sine component
+amplitude = 3;                 % Amplitude of the sine component
+linear_ramp = slope * t_ramp;                % Linear ramp component
+sine_component = amplitude * sin(2*pi*frequency*t_ramp);  % Sine component
+
+x_ramp = linear_ramp + sine_component;
+
+%%% Sawtooth signal
+% Define parameters for the sawtooth signal
+A_sawtooth = 7;      % Amplitude
+T_sawtooth = 1.6;      % Period
+cycles_sawtooth = 4; % Number of cycles
+t_sawtooth = 0:0.01:cycles_sawtooth * T_sawtooth; % Time values
+
+% Calculate the sawtooth signal values
+x_sawtooth = A_sawtooth * (t_sawtooth / T_sawtooth - floor(t_sawtooth / T_sawtooth));
+
+% Perform convolution
+conv_result = zeros(size(t_ramp));
+
+for n = 1:length(t_ramp)
+    for k = 1:length(t_sawtooth)
+        if n - k + 1 >= 1 && n - k + 1 <= length(t_ramp)
+            conv_result(n) = conv_result(n) + x_sawtooth(k) * x_ramp(n - k + 1);
+        end
+    end
+end
+conv_result_with=conv(x_ramp,x_sawtooth);
+% Plot the original ramp signal
+subplot(4, 2, 1);
+plot(t_ramp, x_ramp, 'b', 'LineWidth', 1);
+xlabel('Time (sunu-045)');
+ylabel('Signal Value');
+title('Ramp Signal: linear_ramp + sine_component');
+grid on;
+
+% Plot the original sawtooth signal
+subplot(4, 2, 3);
+plot(t_sawtooth, x_sawtooth, 'r', 'LineWidth', 1);
+title(['Sawtooth Signal with ', num2str(cycles_sawtooth), ' Cycles']);
+xlabel('Time (t) (sunu-045)');
+ylabel('Amplitude');
+grid on;
+
+% Plot the convolution result
+subplot(4, 2, 5);
+plot(t_ramp, conv_result, 'g', 'LineWidth', 1);
+title('Convolution Result of Ramp and Sawtooth Signals');
+xlabel('Time (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+% Plot the convolution result
+subplot(4, 2, 7);
+plot(conv_result_with, 'g', 'LineWidth', 1);
+title('Convolution Result of Ramp and Sawtooth Signals with using function');
+xlabel('Time (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+
+%%% Ramp signal
+n_ramp = 0:100;  % Discrete time values from 0 to 10             % Amplitude of the sine component
+linear_ramp_discrete = slope * n_ramp;                % Linear ramp component
+sine_component_discrete = amplitude * sin(2*pi*frequency*n_ramp);  % Sine component
+
+x_ramp_discrete = linear_ramp_discrete + sine_component_discrete;
+%%% Sawtooth signal
+% Define parameters for the sawtooth signal
+n_sawtooth = 0:0.01:cycles_sawtooth * T_sawtooth; % Time values
+
+
+% Calculate the sawtooth signal values
+x_sawtooth_discrete = A_sawtooth * (n_sawtooth / T_sawtooth - floor(n_sawtooth / T_sawtooth));
+
+% Initialize the convolution result
+conv_result_discrete = zeros(size(n_ramp));
+
+% Perform discrete convolution
+for n = 1:length(n_ramp)
+    for k = 1:length(n_sawtooth)
+        if n - k + 1 >= 1 && n - k + 1 <= length(n_ramp)
+            conv_result_discrete(n) = conv_result_discrete(n) + x_sawtooth(k) * x_ramp(n - k + 1);
+        end
+    end
+end
+conv_result_with_discrete=conv(x_ramp_discrete,x_sawtooth_discrete);
+% Plot the original ramp signal
+subplot(4, 2, 2);
+stem(n_ramp, x_ramp_discrete, 'b', 'LineWidth', 1);
+xlabel('Time (sunu-045)');
+ylabel('Signal Value');
+title('Ramp Signal: linear_ ramp_ discrete + sine_ component_ discrete');
+grid on;
+
+% Plot the original sawtooth signal
+subplot(4, 2, 4);
+stem(n_sawtooth, x_sawtooth, 'r', 'LineWidth', 1);
+title(['Sawtooth Signal with ', num2str(cycles_sawtooth), ' Cycles']);
+xlabel('sequence (n) (sunu-045)');
+ylabel('Amplitude');
+grid on;
+
+% Plot the convolution result
+subplot(4, 2, 6);
+stem(n_ramp, conv_result_discrete, 'g', 'LineWidth', 1);
+title('Convolution Result of Ramp and Sawtooth Signals');
+xlabel('Time (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+% Plot the convolution result
+subplot(4, 2, 8);
+stem(conv_result_with_discrete, 'g', 'LineWidth', 0.01);
+title('Convolution Result of Ramp and Sawtooth Signals with using function');
+xlabel('Time (sunu-045)');
+ylabel('Convolution Result');
+grid on;
+
